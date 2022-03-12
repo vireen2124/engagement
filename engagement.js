@@ -5,7 +5,7 @@ const countdown=()=>{
     const minutesTag=timeTags[2];
     const secondsTag=timeTags[3];
     //engagement date
-    const engagementDate=new Date("march 26, 2022 17:00:00").getTime();
+    const engagementDate=new Date("march 26, 2022 15:00:00").getTime();
     //today date
     const today=new Date().getTime();
     //duration
