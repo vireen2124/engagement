@@ -1,49 +1,12 @@
- //engagement date
- const engagementDate=new Date("march 12, 2022 15:00:00").getTime();
- //today date
- const today=new Date().getTime();
- //duration
- const timeLeft=engagementDate-today
- const countdown=()=>{
-    const timeTags=document.querySelectorAll(".time");
-    const dayTag=timeTags[0]
-    const hoursTag=timeTags[1];
-    const minutesTag=timeTags[2];
-    const secondsTag=timeTags[3];
-   
-    //time to display
-    var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-    const renderTime=(time,tag)=>{  
-        if(timeLeft<0){
-            tag.textContent=`00`;
-            return
-        }
-        if(time<10){
-            tag.textContent=`0${time}`
-            return
-        }
-        return tag.textContent=time 
-    }
-    stillGotTime=()=>{
-        renderTime(days,dayTag);
-        renderTime(hours,hoursTag);
-        renderTime(minutes,minutesTag);
-        renderTime(seconds,secondsTag); 
-    }
-    return stillGotTime()
-}
-const viewPortWidth=window.innerWidth;
-const viewPortHeight=window.innerHeight;
-const position=["left","right"]
+const timeContainer=document.querySelector(".time-left");
+const position=["left","right"];
+let buttonClicked=false;
+let ballons=0
 const generateRandomLocation=(viewPort)=>{
-    let a=Math.floor(Math.random()*viewPort);
+    let a= Math.floor(Math.random()*viewPort);
     if(a>=95){
-        a=Math.abs(Math.floor(Math.random()*viewPort));
+        a = Math.floor(Math.random()*viewPort);
     }
-    
     return a
 }
 const randomPosition=()=>{
@@ -63,31 +26,32 @@ const generateRandomColor=()=>{
     return color
 }
 const renderBallons=()=>{
-    for(let i=0;i<1;i++){
-        const ballon =document.createElement("div");
-        const left=generateRandomLocation(100);
-        const top=generateRandomLocation(100);
-        const BallonPosition=position[randomPosition()];
-        const container=document.querySelector(".ballon-container");
-        ballon.animate([
-            {top:"-50vh",BallonPosition:`${left}vw`},
-            {top:`${top}vh`,BallonPosition:`${left}vw`}
-        ],{duration:5000})
-        ballon.classList.add("ballon");
-        ballon.style.top=`${top}vh`;
-        ballon.style[BallonPosition]=`${left}vw`;
-        ballon.style.background=generateRandomColor()
-        container.appendChild(ballon);     
-    }
+    ballons++
+    if(ballons<=100){
+        for(let i=0;i<1;i++){
+            const ballon =document.createElement("div");
+            const left=generateRandomLocation(100);
+            const top=generateRandomLocation(100);
+            const BallonPosition=position[randomPosition()];
+            const container=document.querySelector(".ballon-container");
+            ballon.animate([
+                {top:"-50vh",BallonPosition:`${left}vw`},
+                {top:`${top}vh`,BallonPosition:`${left}vw`}
+            ],{duration:5000})
+            ballon.classList.add("ballon");
+            ballon.style.top=`${top}vh`;
+            ballon.style[BallonPosition]=`${left}vw`;
+            ballon.style.background=generateRandomColor()
+            container.appendChild(ballon);     
+        }
+    }  
 }
-const timeContainer=document.querySelector(".time-left");
 const timeOut=()=>{
     timeContainer.classList.toggle("ticking")
 }
-if(timeLeft<=0){
-    const ticking=setInterval(timeOut, 1000);
+const engagementStarted=()=>{
+    timeOut()
     setTimeout(() => {
-        clearInterval(ticking);
         const checkClassList=timeContainer.classList.contains("ticking");
         if(checkClassList){
             timeContainer.classList.remove("ticking")
@@ -95,23 +59,65 @@ if(timeLeft<=0){
         const ballons=setInterval(renderBallons,500);
         const endingGreeting=document.querySelector(".welcome-attendees");
         const pdf=document.querySelector(".pdf");
-        endingGreeting.classList.add("welcome-attendees-visible");
+        if(buttonClicked===false){
+            endingGreeting.classList.add("welcome-attendees-visible");
+        }
+       
         pdf.style.zIndex="5"
         setTimeout(()=>{
             clearInterval(ballons)
-        },30000)
+        },10000)
     }, 9000);
-
 }
-setInterval(countdown,1000)
 
+const countdown=()=>{
+    const timeTags=document.querySelectorAll(".time");
+    
+    const dayTag=timeTags[0]
+    const hoursTag=timeTags[1];
+    const minutesTag=timeTags[2];
+    const secondsTag=timeTags[3];
+    const engagementDate=new Date("march 12, 2022 15:00:00").getTime();
+    //today date
+    const today=new Date().getTime();
+    //duration
+    const timeLeft=engagementDate-today
+    //time to display
+    var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+    const renderTime=(time,tag)=>{  
+        if(time<10){
+            tag.textContent=`0${time}`
+            return
+        }
+        return tag.textContent=time 
+    }
+    stillGotTime=()=>{
+        renderTime(days,dayTag);
+        renderTime(hours,hoursTag);
+        renderTime(minutes,minutesTag);
+        renderTime(seconds,secondsTag); 
+    }
 
-const popUpBtn=document.querySelector(".close-pop-up")
-popUpBtn.addEventListener("click",()=>{
-    const popUp=document.querySelector(".onLoad-pop-up");
-    popUp.classList.add("pop-up-hide")
-})
+    if(timeLeft<=0){
+        console.log("hi")
+        return engagementStarted()
+    }
+    return stillGotTime()
+}
+
 const closeEnding=document.querySelector(".close-ending");
+const stopInterval=()=>{
+    
+    return setInterval(()=>{
+        if(buttonClicked===true) return
+        countdown()
+    },1000)
+}
+
+stopInterval()
 closeEnding.addEventListener("click",()=>{
     const ballonsContainer=document.querySelector(".ballon-container");
     const endingGreeting=document.querySelector(".welcome-attendees");
@@ -119,7 +125,29 @@ closeEnding.addEventListener("click",()=>{
     pdf.style.zIndex="1"
     ballonsContainer.style.display="none";
     endingGreeting.classList.remove("welcome-attendees-visible");
+    buttonClicked=true;
+    stopInterval();
+    return
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+const popUpBtn=document.querySelector(".close-pop-up")
+popUpBtn.addEventListener("click",()=>{
+    const popUp=document.querySelector(".onLoad-pop-up");
+    popUp.classList.add("pop-up-hide")
+})
+
 window.addEventListener("scroll",()=>{
     const currentPageHeight=window.scrollY;
     const goToTop=document.querySelector(".got-to-top");
