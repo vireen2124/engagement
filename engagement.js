@@ -1,5 +1,5 @@
  //engagement date
- const engagementDate=new Date("march 26, 2022 15:00:00").getTime();
+ const engagementDate=new Date("march 12, 2022 15:00:00").getTime();
  //today date
  const today=new Date().getTime();
  //duration
@@ -94,7 +94,9 @@ if(timeLeft<=0){
         }
         const ballons=setInterval(renderBallons,500);
         const endingGreeting=document.querySelector(".welcome-attendees");
-        endingGreeting.classList.add("welcome-attendees-visible")
+        const pdf=document.querySelector(".pdf");
+        endingGreeting.classList.add("welcome-attendees-visible");
+        pdf.style.zIndex="5"
         setTimeout(()=>{
             clearInterval(ballons)
         },30000)
@@ -111,10 +113,12 @@ popUpBtn.addEventListener("click",()=>{
 })
 const closeEnding=document.querySelector(".close-ending");
 closeEnding.addEventListener("click",()=>{
-    const ballonsContainer=document.querySelector(".ballon-container")
-    const endingGreeting=document.querySelector(".welcome-attendees")
+    const ballonsContainer=document.querySelector(".ballon-container");
+    const endingGreeting=document.querySelector(".welcome-attendees");
+    const pdf=document.querySelector(".pdf");
+    pdf.style.zIndex="1"
     ballonsContainer.style.display="none";
-    endingGreeting.classList.remove("welcome-attendees-visible")
+    endingGreeting.classList.remove("welcome-attendees-visible");
 })
 window.addEventListener("scroll",()=>{
     const currentPageHeight=window.scrollY;
